@@ -96,7 +96,10 @@ public class DetailActivity extends AppCompatActivity {
         //入力演算子
         if (calcSet.getInputSyms() != null) {
             Spinner firstInputSymbol = (Spinner) findViewById(R.id.symbol_spinner);
-            //TODO: Spinnerの値の変更方法が分からん
+            ArrayAdapter<String> adapter = (ArrayAdapter<String>)firstInputSymbol.getAdapter();
+            Log.d(TAG, calcSet.getInputSyms().get(0));
+            int position = adapter.getPosition(calcSet.getInputSyms().get(0));
+            firstInputSymbol.setSelection(position);
         }
 
     }
