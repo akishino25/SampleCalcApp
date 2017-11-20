@@ -1,7 +1,13 @@
 <resources>
     <string name="app_name">SimpleCalcApp</string>
+
+    <string name="projectsTitle">プロジェクト一覧</string>
+    <string name="newProjectButton">プロジェクト新規作成</string>
+
+    <string name="projectTitleHint">プロジェクト名</string>
     <string name="mainTitle">簡易計算器サンプル(仮）</string>
-    <string name="newButton">New</string>
+    <string name="newButton">計算式を新規作成</string>
+    <string name="saveButton">プロジェクトを保存</string>
 
     <string name="detailTitle">詳細画面</string>
     <string name="inputMemo">メモを入力</string>

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
@@ -20,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
     //Logcat用タグ文字列（クラス名）
     private final static String TAG = MainActivity.class.getSimpleName();
 
+    //ProjectActivityとやり取りするProjectクラス
+    private Project project = null;
     //画面に表示する計算セットを保持する配列
     private ArrayList<CalcSet> calcSetList = new ArrayList<CalcSet>();
     //現在編集中の計算セットの配列番号
@@ -29,6 +32,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //ProjectsActivityからProjectを渡された時の処理
+        this.project = (Project) getIntent().getSerializableExtra("Project");
+        if(this.project.getCalcSetList() != null){ //もし計算式が含まれていたら
+            //メンバに設定して、画面に計算式を描画する
+            this.calcSetList = this.project.getCalcSetList();
+            setLisViewFromCalcSetList(this.calcSetList);
+        }
 
         //NewボタンクリックListenr
         findViewById(R.id.newButton).setOnClickListener(
@@ -46,6 +57,26 @@ public class MainActivity extends AppCompatActivity {
             }
         );
 
+        //プロジェクト保存ボタンクリックListener
+        findViewById(R.id.saveButton).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //Projectクラスを更新する
+                        EditText projectNameEdit = (EditText)findViewById(R.id.projectTitle);
+                        Log.d(TAG, projectNameEdit.getText().toString());
+                        project.setProjectName(projectNameEdit.getText().toString());
+                        project.setCalcSetList(calcSetList);
+                        //ProjectクラスをProjectActivityに戻す
+                        Intent intent = new Intent();
+                        intent.putExtra("Project", project);
+                        setResult(Activity.RESULT_OK, intent);
+                        finish();
+                    }
+                }
+        );
+
+
         //ListViewクリックListener
         final ListView listView = (ListView)findViewById(R.id.calcList);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -60,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, requestCode);
             }
         });
+
 
     }
 

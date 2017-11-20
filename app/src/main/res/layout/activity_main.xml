@@ -5,17 +5,41 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <!--
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/mainTitle"
         android:textSize="24dp" />
+        -->
 
-    <Button
-        android:id="@+id/newButton"
+    <EditText
+        android:id="@+id/projectTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/newButton" />
+        android:inputType="text"
+        android:hint="@string/projectTitleHint"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/newButton"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/newButton" />
+
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/saveButton" />
+
+    </LinearLayout>
+
 
     <ScrollView
         android:layout_width="wrap_content"
