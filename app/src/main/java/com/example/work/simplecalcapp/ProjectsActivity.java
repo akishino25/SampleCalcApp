@@ -5,15 +5,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ProjectsActivity extends AppCompatActivity {
 
     //Logcat用タグ文字列（クラス名）
     private final static String TAG = ProjectsActivity.class.getSimpleName();
 
-    private ArrayList<Project> projectList = null;
+    private ArrayList<Project> projectList = new ArrayList<Project>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +52,24 @@ public class ProjectsActivity extends AppCompatActivity {
         if(requestCode == 1001){ //プロジェクト作成の戻り処理
             Project project = (Project) data.getSerializableExtra("Project");
             Log.d(TAG, project.getProjectName());
-            //TODO 戻されたプロジェクトをListViewとして表示する
+            //Projectをリストに格納して、画面に再描画
+            this.projectList.add(project);
+            setListViewFromProjectList(this.projectList);
+            //TODO:リストビュー押下時の処理を追加
         }
+    }
+
+    private void setListViewFromProjectList(ArrayList<Project> projectList){
+        List<String> projectNameList= new ArrayList<String>();
+        for(Project p: projectList){
+            String pName = p.getProjectName();
+            projectNameList.add(pName);
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                this, android.R.layout.simple_list_item_1, projectNameList);
+
+        ListView listView = (ListView)findViewById(R.id.projectList);
+        listView.setAdapter(adapter);
     }
 }
