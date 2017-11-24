@@ -67,7 +67,8 @@ public class ProjectsActivity extends AppCompatActivity {
 
             //ProjectをDBに格納して、DB情報を画面に再描画
             dbAdapter.open();
-            dbAdapter.insertProject(project);
+            boolean result = dbAdapter.insertProject(project);
+            Log.d(TAG, "Insert Operation is " +result );
             updateProjectListFromProjectTable();
             setListViewFromProjectList(this.projectList);
 

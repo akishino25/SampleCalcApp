@@ -89,7 +89,7 @@ public class DBAdapter {
      */
     public boolean insertProject(Project project){
         ContentValues values = new ContentValues();
-        values.put(COL_PROJECT_ID, project.getProjectName());
+        values.put(COL_PROJECT_NAME, project.getProjectName());
         return db.insert(PROJECT_TABLE_NAME, null, values) > 0;
     }
 
@@ -121,7 +121,7 @@ public class DBAdapter {
             cursor = db.query(PROJECT_TABLE_NAME,
                     new String[]{COL_PROJECT_ID, COL_PROJECT_NAME},
                     null, null, null, null,
-                    COL_PROJECT_ID +" DESC");
+                    COL_PROJECT_ID +" ASC");
         }catch (NullPointerException e){
             //DBが空の時NULLが返る
             return null;
