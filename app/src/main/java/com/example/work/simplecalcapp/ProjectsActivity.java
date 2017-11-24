@@ -34,12 +34,13 @@ public class ProjectsActivity extends AppCompatActivity {
 
         //DBからProjectListを取得し、画面再描画
         dbAdapter.open();
-        updateProjectListFromProjectTable();
-        setListViewFromProjectList(this.projectList);
+        updateMemberAndViewOfProjectList();
+        //updateProjectListFromProjectTable();
+        //setListViewFromProjectList(this.projectList);
 
         //プロジェクト新規作成ボタンクリックListener
         findViewById(R.id.newProjectButton).setOnClickListener(
-                new View.OnClickListener(){
+                new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         //空のProjectを作成してMainActivityに渡す
@@ -52,7 +53,7 @@ public class ProjectsActivity extends AppCompatActivity {
                 }
         );
 
-        ListView listView = (ListView)findViewById(R.id.projectList);
+        ListView listView = (ListView) findViewById(R.id.projectList);
         //フローティングContextMenuを表示するViewを登録
         registerForContextMenu(listView);
 
@@ -60,6 +61,7 @@ public class ProjectsActivity extends AppCompatActivity {
 
     /**
      * 他のActivityから処理が戻ってきた場合の処理
+     *
      * @param requestCode
      * @param resultCode
      * @param data
@@ -68,7 +70,7 @@ public class ProjectsActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == 1001){ //プロジェクト作成の戻り処理
+        if (requestCode == 1001) { //プロジェクト作成の戻り処理
             Project project = (Project) data.getSerializableExtra("Project");
             Log.d(TAG, project.getProjectName());
             /*
@@ -80,9 +82,10 @@ public class ProjectsActivity extends AppCompatActivity {
             //ProjectをDBに格納して、DB情報を画面に再描画
             dbAdapter.open();
             boolean result = dbAdapter.insertProject(project);
-            Log.d(TAG, "Insert Operation is " +result );
-            updateProjectListFromProjectTable();
-            setListViewFromProjectList(this.projectList);
+            Log.d(TAG, "Insert Operation is " + result);
+            updateMemberAndViewOfProjectList();
+            //updateProjectListFromProjectTable();
+            //setListViewFromProjectList(this.projectList);
 
 
             //TODO:リストビュー押下時の処理を追加
@@ -91,6 +94,7 @@ public class ProjectsActivity extends AppCompatActivity {
 
     /**
      * ContextMenu表示を登録されたViewが長押しクリックを検知した場合
+     *
      * @param menu
      * @param v
      * @param menuInfo
@@ -104,6 +108,7 @@ public class ProjectsActivity extends AppCompatActivity {
 
     /**
      * ContextMenu内のItemが選択された時
+     *
      * @param item
      * @return
      */
@@ -111,17 +116,18 @@ public class ProjectsActivity extends AppCompatActivity {
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
-        switch(item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.deleteProject:
                 //選択されたListViewの行はinfo.positionで取得
-                Log.d(TAG, "Target of delete operation is " +info.position);
+                Log.d(TAG, "Target of delete operation is " + info.position);
                 //選択された行番号から、ProjectIDを取得
                 Project project = projectList.get(info.position);
                 int projectId = project.getProjectId();
                 dbAdapter.deleteProject(projectId);
                 //削除後に画面再描画
-                updateProjectListFromProjectTable();
-                setListViewFromProjectList(this.projectList);
+                updateMemberAndViewOfProjectList();
+                //updateProjectListFromProjectTable();
+                //setListViewFromProjectList(this.projectList);
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -129,11 +135,22 @@ public class ProjectsActivity extends AppCompatActivity {
     }
 
     /**
+     * メンバのprojectList　および　画面　をDBの値で更新
+     */
+    private void updateMemberAndViewOfProjectList() {
+        this.projectList = dbAdapter.getAllProjects();
+        setListViewFromProjectList(this.projectList);
+    }
+
+
+    /**
      * メンバのProjectListをProjectTableの内容で更新
      */
+    /*
     private void updateProjectListFromProjectTable(){
-        ArrayList<Project> projectList = new ArrayList<Project>();
-        Cursor cursor = dbAdapter.getAllProjects();
+        //ArrayList<Project> projectList = new ArrayList<Project>();
+        this.projectList = dbAdapter.getAllProjects();
+
         //cursorの参照先を先頭にする
         boolean isEof = cursor.moveToFirst();
         while (isEof) {
@@ -147,15 +164,19 @@ public class ProjectsActivity extends AppCompatActivity {
         }
         cursor.close();
         this.projectList = projectList;
-    }
+
+}
+        */
+
 
     /**
      * ProjectのArrayListを画面に再描画
+     *
      * @param projectList
      */
-    private void setListViewFromProjectList(ArrayList<Project> projectList){
-        List<String> projectNameList= new ArrayList<String>();
-        for(Project p: projectList){
+    private void setListViewFromProjectList(ArrayList<Project> projectList) {
+        List<String> projectNameList = new ArrayList<String>();
+        for (Project p : projectList) {
             String pName = p.getProjectName();
             projectNameList.add(pName);
         }
@@ -163,7 +184,7 @@ public class ProjectsActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 this, android.R.layout.simple_list_item_1, projectNameList);
 
-        ListView listView = (ListView)findViewById(R.id.projectList);
+        ListView listView = (ListView) findViewById(R.id.projectList);
         listView.setAdapter(adapter);
     }
 }
