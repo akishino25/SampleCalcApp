@@ -3,6 +3,7 @@
 
     <string name="projectsTitle">プロジェクト一覧</string>
     <string name="newProjectButton">プロジェクト新規作成</string>
+    <string name="deleteProjects">プロジェクトを削除</string>
 
     <string name="projectTitleHint">プロジェクト名</string>
     <string name="mainTitle">簡易計算器サンプル(仮）</string>

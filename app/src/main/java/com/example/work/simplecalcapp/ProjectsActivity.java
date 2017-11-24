@@ -5,8 +5,14 @@ import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -27,6 +33,7 @@ public class ProjectsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_projects);
 
         //DBからProjectListを取得し、画面再描画
+        dbAdapter.open();
         updateProjectListFromProjectTable();
         setListViewFromProjectList(this.projectList);
 
@@ -44,6 +51,11 @@ public class ProjectsActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        ListView listView = (ListView)findViewById(R.id.projectList);
+        //フローティングContextMenuを表示するViewを登録
+        registerForContextMenu(listView);
+
     }
 
     /**
@@ -78,24 +90,63 @@ public class ProjectsActivity extends AppCompatActivity {
     }
 
     /**
+     * ContextMenu表示を登録されたViewが長押しクリックを検知した場合
+     * @param menu
+     * @param v
+     * @param menuInfo
+     */
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.projects_menu, menu);
+    }
+
+    /**
+     * ContextMenu内のItemが選択された時
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+        switch(item.getItemId()){
+            case R.id.deleteProject:
+                //選択されたListViewの行はinfo.positionで取得
+                Log.d(TAG, "Target of delete operation is " +info.position);
+                //選択された行番号から、ProjectIDを取得
+                Project project = projectList.get(info.position);
+                int projectId = project.getProjectId();
+                dbAdapter.deleteProject(projectId);
+                //削除後に画面再描画
+                updateProjectListFromProjectTable();
+                setListViewFromProjectList(this.projectList);
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+    /**
      * メンバのProjectListをProjectTableの内容で更新
      */
     private void updateProjectListFromProjectTable(){
         ArrayList<Project> projectList = new ArrayList<Project>();
         Cursor cursor = dbAdapter.getAllProjects();
-        if(cursor != null){
-            //cursorの参照先を先頭にする
-            boolean isEof = cursor.moveToFirst();
-            while(isEof){
-                String projectName = cursor.getString(cursor.getColumnIndex(dbAdapter.COL_PROJECT_NAME));
-                Project project = new Project();
-                project.setProjectName(projectName);
-                projectList.add(project);
-                isEof = cursor.moveToNext();
-            }
-            cursor.close();
-            this.projectList = projectList;
+        //cursorの参照先を先頭にする
+        boolean isEof = cursor.moveToFirst();
+        while (isEof) {
+            int projectId = cursor.getInt(cursor.getColumnIndex(dbAdapter.COL_PROJECT_ID));
+            String projectName = cursor.getString(cursor.getColumnIndex(dbAdapter.COL_PROJECT_NAME));
+            Project project = new Project();
+            project.setProjectId(projectId);
+            project.setProjectName(projectName);
+            projectList.add(project);
+            isEof = cursor.moveToNext();
         }
+        cursor.close();
+        this.projectList = projectList;
     }
 
     /**

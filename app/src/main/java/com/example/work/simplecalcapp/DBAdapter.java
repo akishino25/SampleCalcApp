@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 /**
  * SQLite接続用クラス
@@ -12,6 +13,9 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 
 public class DBAdapter {
+    //Logcat用タグ文字列（クラス名）
+    private final static String TAG = DBAdapter.class.getSimpleName();
+
     static final String DATABASE_NAME="simpleCalc.db";
     static final int DATABASE_VERSION = 1;
 
@@ -97,9 +101,12 @@ public class DBAdapter {
      * Project削除
      * @return
      */
-    public boolean deleteProject(){
-        //TODO:Project削除SQL処理を実装
-        return true;
+    public int deleteProject(int projectId){
+        int rowId = db.delete(PROJECT_TABLE_NAME,
+                COL_PROJECT_ID +"=?",
+                new String[]{String.valueOf(projectId)}
+        );
+        return rowId;
     }
 
     /**
@@ -123,8 +130,9 @@ public class DBAdapter {
                     null, null, null, null,
                     COL_PROJECT_ID +" ASC");
         }catch (NullPointerException e){
-            //DBが空の時NULLが返る
-            return null;
+            //TODO:DBが空の時NULLが返る？
+            Log.d(TAG, "getAllProjectsError", e);
+
         }
         return cursor;
     }

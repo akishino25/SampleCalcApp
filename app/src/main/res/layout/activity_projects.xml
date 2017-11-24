@@ -17,15 +17,16 @@
         android:layout_height="wrap_content"
         android:text="@string/newButton" />
 
+    <!--
     <ScrollView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content">-->
         <com.example.work.simplecalcapp.MesuredListView
             android:id="@+id/projectList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"></com.example.work.simplecalcapp.MesuredListView>
 
-    </ScrollView>
+    <!--</ScrollView>-->
 
 
 </LinearLayout>

@@ -9,9 +9,17 @@ import java.util.ArrayList;
  */
 
 public class Project  implements Serializable {
+    private int projectId = 0;
     private String projectName = null;
     private ArrayList<CalcSet> calcSetList = null;
 
+    public int getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
+    }
     public String getProjectName() {
         return projectName;
     }
