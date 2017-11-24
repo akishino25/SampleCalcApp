@@ -21,6 +21,9 @@ public class MainActivity extends AppCompatActivity {
     //Logcat用タグ文字列（クラス名）
     private final static String TAG = MainActivity.class.getSimpleName();
 
+    private DBAdapter dbAdapter = new DBAdapter(MainActivity.this);
+
+
     //ProjectActivityとやり取りするProjectクラス
     private Project project = null;
     //画面に表示する計算セットを保持する配列
@@ -35,11 +38,15 @@ public class MainActivity extends AppCompatActivity {
 
         //ProjectsActivityからProjectを渡された時の処理
         this.project = (Project) getIntent().getSerializableExtra("Project");
+        //ProjectIDを持つCalcSetで画面再描画
+        dbAdapter.open();
+        updateMemberAndViewOfCalcSetList(this.project.getProjectId());
+        /*
         if(this.project.getCalcSetList() != null){ //もし計算式が含まれていたら
             //メンバに設定して、画面に計算式を描画する
             this.calcSetList = this.project.getCalcSetList();
             setLisViewFromCalcSetList(this.calcSetList);
-        }
+        }*/
 
         //NewボタンクリックListenr
         findViewById(R.id.newButton).setOnClickListener(
@@ -111,10 +118,15 @@ public class MainActivity extends AppCompatActivity {
                 //Log.d(TAG, "Intent Test:" +data.getStringExtra("testIntent"));
                 CalcSet calcSet = (CalcSet)data.getSerializableExtra("calcSet");
                 Log.d(TAG, "calcResult of calcSet:" +calcSet.getCalcResult());
-                this.calcSetList.add(calcSet);
 
+                /*
+                this.calcSetList.add(calcSet);
                 //画面にcalcSetListを再描画
                 setLisViewFromCalcSetList(this.calcSetList);
+                */
+                dbAdapter.insertCalcSet(calcSet);
+                updateMemberAndViewOfCalcSetList(this.project.getProjectId());
+
             }
         }
 
@@ -123,13 +135,27 @@ public class MainActivity extends AppCompatActivity {
                 //戻されたcalcSetをメンバ配列として置き換え
                 CalcSet calcSet = (CalcSet)data.getSerializableExtra("calcSet");
                 Log.d(TAG, "calcResult of calcSet:" +calcSet.getCalcResult());
+
+                /*
                 this.calcSetList.set(calcSetEditNo, calcSet);
                 calcSetEditNo = -1; //編集が完了したら、番号をリセットする
 
                 //画面にcalcSetListを再描画
                 setLisViewFromCalcSetList(this.calcSetList);
+                */
+                //TODO:Update処理を追加（DBをUpdateしたのち、updateMemberAndViewOfCalcSetList()を実行
             }
         }
+    }
+
+    /**
+     * DBの値をもとに、メンバおよび画面のCalcSetを更新
+     * @param projectId
+     */
+    private void updateMemberAndViewOfCalcSetList(int projectId){
+        Log.d(TAG, "projectID is " +projectId);
+        this.calcSetList = dbAdapter.getCalcSets(projectId);
+        setLisViewFromCalcSetList(this.calcSetList);
     }
 
     private void setLisViewFromCalcSetList(ArrayList<CalcSet> calcSetList){

@@ -161,17 +161,13 @@ public class DBAdapter {
      * @return
      */
     public boolean insertCalcSet(CalcSet calcSet){
-
         ContentValues values = new ContentValues();
         values.put(COL_CALCSET_PROJECTID, calcSet.getProjectId());
         values.put(COL_CAlCSET_MEMO, calcSet.getMemo());
-        values.put(COL_CAlCSET_INPUTNUMS, calcSet.getInputNums());
-        values.put();
-        values.put();
-
-
-        return db.insert(PROJECT_TABLE_NAME, null, values) > 0;
-        return true;
+        values.put(COL_CAlCSET_INPUTNUMS, calcSet.convertFromInputNumsToString());
+        values.put(COL_CAlCSET_INPUTSYMS, calcSet.convertFromInputSymsToString());
+        values.put(COL_CAlCSET_CALCRESULT, calcSet.getCalcResult());
+        return db.insert(CALCSET_TABLE_NAME, null, values) > 0;
     }
 
     /**
@@ -195,12 +191,42 @@ public class DBAdapter {
     }
 
     /**
-     * 全件CalcSet取得
+     * 指定したprojectIdを持つCalcSetを取得
      * @return
      */
-    public ArrayList<CalcSet> getAllCalcSets(){
-        //TODO:CalcSet全件取得処理実装
-        return null;
+    public ArrayList<CalcSet> getCalcSets(int projectId){
+        ArrayList<CalcSet> calcSetList = new ArrayList<CalcSet>();
+        Cursor cursor = null;
+        try {
+            cursor = db.query(CALCSET_TABLE_NAME,
+                    new String[]{COL_CAlCSET_ID, COL_CALCSET_PROJECTID, COL_CAlCSET_MEMO,
+                            COL_CAlCSET_INPUTNUMS, COL_CAlCSET_INPUTSYMS, COL_CAlCSET_CALCRESULT},
+                    COL_CAlCSET_ID +"=?", new String[]{String.valueOf(projectId)},
+                    null, null,COL_CAlCSET_ID + " ASC");
+        } catch (NullPointerException e) {
+            //TODO:DBが空の時NULLが返る？
+            Log.d(TAG, "getCalcSetError", e);
+        }
+        //cursorの参照先を先頭にする
+        boolean isEof = cursor.moveToFirst();
+        while (isEof) {
+            CalcSet calcSet = new CalcSet();
+            ArrayList<Integer> inputNums = calcSet.convertFromStringToInputNums(
+                    cursor.getString(cursor.getColumnIndex(COL_CAlCSET_INPUTNUMS)));
+            ArrayList<String> inputSyms = calcSet.convertFromStringToInputSyms(
+                    cursor.getString(cursor.getColumnIndex(COL_CAlCSET_INPUTSYMS)));
+
+            calcSet.setCalcSetId(cursor.getInt(cursor.getColumnIndex(COL_CAlCSET_ID)));
+            calcSet.setProjectId(cursor.getInt(cursor.getColumnIndex(COL_CALCSET_PROJECTID)));
+            calcSet.setMemo(cursor.getString(cursor.getColumnIndex(COL_CAlCSET_MEMO)));
+            calcSet.setInputNums(inputNums);
+            calcSet.setInputSyms(inputSyms);
+            calcSet.setCalcResult(cursor.getDouble(cursor.getColumnIndex(COL_CAlCSET_CALCRESULT)));
+            calcSetList.add(calcSet);
+            isEof = cursor.moveToNext();
+        }
+        cursor.close();
+        return calcSetList;
     }
 
 }
