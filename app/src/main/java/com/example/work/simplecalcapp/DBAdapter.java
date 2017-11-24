@@ -161,7 +161,16 @@ public class DBAdapter {
      * @return
      */
     public boolean insertCalcSet(CalcSet calcSet){
-        //TODO:CalcSet新規登録処理実装
+
+        ContentValues values = new ContentValues();
+        values.put(COL_CALCSET_PROJECTID, calcSet.getProjectId());
+        values.put(COL_CAlCSET_MEMO, calcSet.getMemo());
+        values.put(COL_CAlCSET_INPUTNUMS, calcSet.getInputNums());
+        values.put();
+        values.put();
+
+
+        return db.insert(PROJECT_TABLE_NAME, null, values) > 0;
         return true;
     }
 
@@ -185,7 +194,11 @@ public class DBAdapter {
         return true;
     }
 
-    public Cursor getAllCalcSets(){
+    /**
+     * 全件CalcSet取得
+     * @return
+     */
+    public ArrayList<CalcSet> getAllCalcSets(){
         //TODO:CalcSet全件取得処理実装
         return null;
     }

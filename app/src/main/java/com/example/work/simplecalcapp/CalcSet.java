@@ -9,6 +9,8 @@ import java.util.ArrayList;
  */
 
 public class CalcSet implements Serializable {
+    private int calcSetId = 0;
+    private int projectId = 0;
     private String memo = null;
     private ArrayList<Integer> inputNums = null;
     private ArrayList<String> inputSyms = null;
@@ -52,6 +54,84 @@ public class CalcSet implements Serializable {
         }else{
             return null;
         }
+    }
+
+    /**
+     * inputNums のArrayListをStringに変換
+     * @return
+     */
+    public String convertFromInputNumsToString(){
+        String c = null;
+        for(int i=0; i<this.inputNums.size(); i++ ){
+            String d = null;
+            if(i != this.inputNums.size()-1){
+                d = String.valueOf(inputNums.get(i)) + ",";
+            }else{
+                d = String.valueOf(inputNums.get(i));
+            }
+            c = c + d;
+        }
+        return c;
+    }
+
+    /**
+     * inputSyms のArrayListをStringに変換
+     * @return
+     */
+    public String convertFromInputSymsToString(){
+        String c = null;
+        for(int i=0; i<this.inputSyms.size(); i++ ){
+            String d = null;
+            if(i != this.inputSyms.size()-1){
+                d = inputSyms.get(i) + ",";
+            }else{
+                d = inputSyms.get(i);
+            }
+            c = c + d;
+        }
+        return c;
+    }
+
+    /**
+     * inputNums のStringをArrayListに変換
+     * @return
+     */
+    public ArrayList<Integer> convertFromStringToInputNums(String stringList){
+        ArrayList<Integer> convertedList = new ArrayList<Integer>();
+        String[] l = stringList.split(",", 0);
+        for(int i=0; i<l.length; i++){
+            convertedList.add(Integer.valueOf(l[i]));
+        }
+        return convertedList;
+    }
+
+    /**
+     * inputSyms のStringをArrayListに変換
+     * @return
+     */
+    public ArrayList<String> convertFromStringToInputSyms(String stringList){
+        ArrayList<String> convertedList = new ArrayList<String>();
+        String[] l = stringList.split(",", 0);
+        for(int i=0; i<l.length; i++){
+            convertedList.add(l[i]);
+        }
+        return convertedList;
+    }
+
+    public int getCalcSetId() {
+        return calcSetId;
+    }
+
+    public void setCalcSetId(int calcSetId) {
+        this.calcSetId = calcSetId;
+    }
+
+    public int getProjectId() {
+        return projectId;
+    }
+
+    public void setProjectId(int projectId) {
+        this.projectId = projectId;
     }
 
     public String getMemo() {
