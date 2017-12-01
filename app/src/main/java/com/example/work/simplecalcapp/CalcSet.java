@@ -69,7 +69,11 @@ public class CalcSet implements Serializable {
             }else{
                 d = String.valueOf(inputNums.get(i));
             }
-            c = c + d;
+            if(c == null){
+                c = d;
+            }else{
+                c = c + d;
+            }
         }
         return c;
     }
@@ -87,7 +91,11 @@ public class CalcSet implements Serializable {
             }else{
                 d = inputSyms.get(i);
             }
-            c = c + d;
+            if(c == null){
+                c = d;
+            }else{
+                c = c + d;
+            }
         }
         return c;
     }

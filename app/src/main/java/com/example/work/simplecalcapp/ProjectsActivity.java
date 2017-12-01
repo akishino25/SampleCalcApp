@@ -56,6 +56,18 @@ public class ProjectsActivity extends AppCompatActivity {
         ListView listView = (ListView) findViewById(R.id.projectList);
         //フローティングContextMenuを表示するViewを登録
         registerForContextMenu(listView);
+        //ListViewクリックListener
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //選択されたProjectのpositionはprojectListの配列番号と同じという仮定に基づいて実装
+                Project project = projectList.get(position);
+                Intent intent = new Intent(ProjectsActivity.this, MainActivity.class);
+                intent.putExtra("Project", project);
+                int requestCode = 1001;
+                startActivityForResult(intent, requestCode);
+            }
+        });
 
     }
 
@@ -79,14 +91,29 @@ public class ProjectsActivity extends AppCompatActivity {
             setListViewFromProjectList(this.projectList);
             */
 
-            //ProjectをDBに格納して、DB情報を画面に再描画
+            //Project、およびCalcSetをDBに格納して、DB情報を画面に再描画
             dbAdapter.open();
-            boolean result = dbAdapter.insertProject(project);
-            Log.d(TAG, "Insert Operation is " + result);
-            updateMemberAndViewOfProjectList();
-            //updateProjectListFromProjectTable();
-            //setListViewFromProjectList(this.projectList);
 
+            //Projectのidが付与されていなければProject新規登録、付与されていれば更新
+            if(project.getProjectId() == 0){
+                double projectId = dbAdapter.insertProject(project);
+                project.setProjectId((int)projectId);
+                Log.d(TAG, "Id of new Project is " + projectId);
+            }else{
+                //TODO:Project更新処理
+            }
+
+            //ClacSetsのDB処理
+            for(CalcSet calcSet : project.getCalcSetList()){
+                if(calcSet.getCalcSetId() == 0){
+                    Log.d(TAG, "Paranet's Id of Project is " + project.getProjectId());
+                    calcSet.setProjectId(project.getProjectId());
+                    dbAdapter.insertCalcSet(calcSet);
+                }else{
+                    //TODO:CalcSet更新処理
+                }
+            }
+            updateMemberAndViewOfProjectList();
 
             //TODO:リストビュー押下時の処理を追加
         }
@@ -124,6 +151,7 @@ public class ProjectsActivity extends AppCompatActivity {
                 Project project = projectList.get(info.position);
                 int projectId = project.getProjectId();
                 dbAdapter.deleteProject(projectId);
+                //TODO:削除Projectに関連するCalcSetも削除
                 //削除後に画面再描画
                 updateMemberAndViewOfProjectList();
                 //updateProjectListFromProjectTable();

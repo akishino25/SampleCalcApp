@@ -92,12 +92,12 @@ public class DBAdapter {
     /**
      * Project新規登録
      *
-     * @return 処理失敗時には負の値を返す
+     * @return 処理成功時にはProjectIDを、失敗時には負の値を返す
      */
-    public boolean insertProject(Project project) {
+    public double insertProject(Project project) {
         ContentValues values = new ContentValues();
         values.put(COL_PROJECT_NAME, project.getProjectName());
-        return db.insert(PROJECT_TABLE_NAME, null, values) > 0;
+        return db.insert(PROJECT_TABLE_NAME, null, values);
     }
 
     /**
@@ -201,7 +201,7 @@ public class DBAdapter {
             cursor = db.query(CALCSET_TABLE_NAME,
                     new String[]{COL_CAlCSET_ID, COL_CALCSET_PROJECTID, COL_CAlCSET_MEMO,
                             COL_CAlCSET_INPUTNUMS, COL_CAlCSET_INPUTSYMS, COL_CAlCSET_CALCRESULT},
-                    COL_CAlCSET_ID +"=?", new String[]{String.valueOf(projectId)},
+                    COL_CALCSET_PROJECTID +"=?", new String[]{String.valueOf(projectId)},
                     null, null,COL_CAlCSET_ID + " ASC");
         } catch (NullPointerException e) {
             //TODO:DBが空の時NULLが返る？

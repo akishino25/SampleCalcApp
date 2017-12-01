@@ -114,19 +114,17 @@ public class MainActivity extends AppCompatActivity {
 
         if(requestCode == 1001){ //Newボタン押下時の戻り処理
             if(resultCode == Activity.RESULT_OK){
-                //戻されたcalcSetをメンバ配列に格納
-                //Log.d(TAG, "Intent Test:" +data.getStringExtra("testIntent"));
                 CalcSet calcSet = (CalcSet)data.getSerializableExtra("calcSet");
                 Log.d(TAG, "calcResult of calcSet:" +calcSet.getCalcResult());
 
-                /*
-                this.calcSetList.add(calcSet);
-                //画面にcalcSetListを再描画
+                //CalcSetをメンバ配列に入れて、メンバ配列で画面更新（DBは見ない）
+                calcSetList.add(calcSet);
                 setLisViewFromCalcSetList(this.calcSetList);
-                */
+
+                /*
                 dbAdapter.insertCalcSet(calcSet);
                 updateMemberAndViewOfCalcSetList(this.project.getProjectId());
-
+                */
             }
         }
 
@@ -136,14 +134,11 @@ public class MainActivity extends AppCompatActivity {
                 CalcSet calcSet = (CalcSet)data.getSerializableExtra("calcSet");
                 Log.d(TAG, "calcResult of calcSet:" +calcSet.getCalcResult());
 
-                /*
+                //メンバ配列を更新して、メンバ配列で画面更新（DBは見ない）
                 this.calcSetList.set(calcSetEditNo, calcSet);
                 calcSetEditNo = -1; //編集が完了したら、番号をリセットする
-
-                //画面にcalcSetListを再描画
                 setLisViewFromCalcSetList(this.calcSetList);
-                */
-                //TODO:Update処理を追加（DBをUpdateしたのち、updateMemberAndViewOfCalcSetList()を実行
+
             }
         }
     }
@@ -155,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
     private void updateMemberAndViewOfCalcSetList(int projectId){
         Log.d(TAG, "projectID is " +projectId);
         this.calcSetList = dbAdapter.getCalcSets(projectId);
+        Log.d(TAG, "calcSetList size is " +this.calcSetList.size());
         setLisViewFromCalcSetList(this.calcSetList);
     }
 
