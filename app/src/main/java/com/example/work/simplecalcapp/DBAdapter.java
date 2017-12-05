@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -118,9 +119,17 @@ public class DBAdapter {
      *
      * @return
      */
-    public boolean updateProject() {
-        //TODO:Project更新SQL処理を実装
-        return true;
+    public int updateProject(Project project) {
+        int rowId = -1;
+        if(!TextUtils.isEmpty(project.getProjectName())){
+            Log.d(TAG, "project name is " +project.getProjectName());
+            ContentValues values = new ContentValues();
+            values.put(COL_PROJECT_NAME, project.getProjectName());
+            rowId = db.update(PROJECT_TABLE_NAME, values,
+                    COL_PROJECT_ID + "=?",
+                    new String[]{String.valueOf(project.getProjectId())});
+        }
+        return rowId;
     }
 
     /**
@@ -185,9 +194,17 @@ public class DBAdapter {
      * @param calcSet
      * @return
      */
-    public boolean updateCalcSet(CalcSet calcSet){
-        //TODO:CalcSet更新処理実装
-        return true;
+    public int updateCalcSet(CalcSet calcSet){
+        int rowId = -1;
+        ContentValues values = new ContentValues();
+        values.put(COL_CAlCSET_MEMO, calcSet.getMemo());
+        values.put(COL_CAlCSET_INPUTNUMS, calcSet.convertFromInputNumsToString());
+        values.put(COL_CAlCSET_INPUTSYMS, calcSet.convertFromInputSymsToString());
+        values.put(COL_CAlCSET_CALCRESULT, calcSet.getCalcResult());
+        rowId = db.update(CALCSET_TABLE_NAME, values,
+                COL_PROJECT_ID + "=?",
+                new String[]{String.valueOf(calcSet.getCalcSetId())});
+        return rowId;
     }
 
     /**

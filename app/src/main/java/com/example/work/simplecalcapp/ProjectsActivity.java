@@ -89,7 +89,8 @@ public class ProjectsActivity extends AppCompatActivity {
                 project.setProjectId((int) projectId);
                 Log.d(TAG, "Id of new Project is " + projectId);
             } else {
-                //TODO:Project更新処理
+                double projectId = dbAdapter.updateProject(project);
+                Log.d(TAG, "Id of update Project is "+projectId);
             }
 
             //ClacSetsのDB処理
@@ -99,7 +100,7 @@ public class ProjectsActivity extends AppCompatActivity {
                     calcSet.setProjectId(project.getProjectId());
                     dbAdapter.insertCalcSet(calcSet);
                 } else {
-                    //TODO:CalcSet更新処理
+                    dbAdapter.updateCalcSet(calcSet);
                 }
             }
             updateMemberAndViewOfProjectList();
