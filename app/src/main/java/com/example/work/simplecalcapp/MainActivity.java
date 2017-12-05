@@ -20,14 +20,10 @@ public class MainActivity extends AppCompatActivity {
 
     //Logcat用タグ文字列（クラス名）
     private final static String TAG = MainActivity.class.getSimpleName();
-
     private DBAdapter dbAdapter = new DBAdapter(MainActivity.this);
-
 
     //ProjectActivityとやり取りするProjectクラス
     private Project project = null;
-    //画面に表示する計算セットを保持する配列
-    private ArrayList<CalcSet> calcSetList = new ArrayList<CalcSet>();
     //現在編集中の計算セットの配列番号
     private int calcSetEditNo = -1;
 
@@ -41,16 +37,10 @@ public class MainActivity extends AppCompatActivity {
         //ProjectIDを持つCalcSetで画面再描画
         dbAdapter.open();
         updateMemberAndViewOfCalcSetList(this.project.getProjectId());
-        /*
-        if(this.project.getCalcSetList() != null){ //もし計算式が含まれていたら
-            //メンバに設定して、画面に計算式を描画する
-            this.calcSetList = this.project.getCalcSetList();
-            setLisViewFromCalcSetList(this.calcSetList);
-        }*/
 
         //NewボタンクリックListenr
         findViewById(R.id.newButton).setOnClickListener(
-                new View.OnClickListener(){
+                new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         //空のClacSetを作成して、DetailActivityに渡す
@@ -59,9 +49,8 @@ public class MainActivity extends AppCompatActivity {
                         intent.putExtra("calcSet", calcSet);
                         int requestCode = 1001;
                         startActivityForResult(intent, requestCode);
-
                     }
-            }
+                }
         );
 
         //プロジェクト保存ボタンクリックListener
@@ -70,10 +59,9 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         //Projectクラスを更新する
-                        EditText projectNameEdit = (EditText)findViewById(R.id.projectTitle);
+                        EditText projectNameEdit = (EditText) findViewById(R.id.projectTitle);
                         Log.d(TAG, projectNameEdit.getText().toString());
                         project.setProjectName(projectNameEdit.getText().toString());
-                        project.setCalcSetList(calcSetList);
                         //ProjectクラスをProjectActivityに戻す
                         Intent intent = new Intent();
                         intent.putExtra("Project", project);
@@ -85,82 +73,80 @@ public class MainActivity extends AppCompatActivity {
 
 
         //ListViewクリックListener
-        final ListView listView = (ListView)findViewById(R.id.calcList);
+        final ListView listView = (ListView) findViewById(R.id.calcList);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //選択番号のpositionは、calcSetListの配列番号と同じという仮定に基づいて実装
                 calcSetEditNo = position;
-                CalcSet calcSet = calcSetList.get(position);
+                Log.d(TAG, "position :" + position);
+                Log.d(TAG, "calcSetList size :" + project.getCalcSetList().size());
+                CalcSet calcSet = project.getCalcSetList().get(position);
                 Intent intent = new Intent(MainActivity.this, DetailActivity.class);
                 intent.putExtra("calcSet", calcSet);
                 int requestCode = 1002; //1002のリクエストコードで戻ってきた場合には、既存の行を更新する
                 startActivityForResult(intent, requestCode);
             }
         });
-
-
     }
 
     /**
      * 他のActivityから処理が戻ってきた際の処理
+     *
      * @param requestCode
      * @param resultCode
      * @param data
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1001) { //Newボタン押下時の戻り処理
+            if (resultCode == Activity.RESULT_OK) {
+                CalcSet calcSet = (CalcSet) data.getSerializableExtra("calcSet");
+                Log.d(TAG, "calcResult of calcSet:" + calcSet.getCalcResult());
 
-        if(requestCode == 1001){ //Newボタン押下時の戻り処理
-            if(resultCode == Activity.RESULT_OK){
-                CalcSet calcSet = (CalcSet)data.getSerializableExtra("calcSet");
-                Log.d(TAG, "calcResult of calcSet:" +calcSet.getCalcResult());
-
-                //CalcSetをメンバ配列に入れて、メンバ配列で画面更新（DBは見ない）
-                calcSetList.add(calcSet);
-                setLisViewFromCalcSetList(this.calcSetList);
-
-                /*
-                dbAdapter.insertCalcSet(calcSet);
-                updateMemberAndViewOfCalcSetList(this.project.getProjectId());
-                */
+                //CalcSetをメンバprojectのcalcSet配列に入れて、メンバ配列で画面更新（DBは見ない）
+                ArrayList<CalcSet> tmpCalcSetList = this.project.getCalcSetList();
+                tmpCalcSetList.add(calcSet);
+                this.project.setCalcSetList(tmpCalcSetList);
+                setListView(this.project.getCalcSetList());
             }
         }
 
-        if(requestCode == 1002) { //既存行クリック時の戻り処理
-            if(resultCode == Activity.RESULT_OK) {
+        if (requestCode == 1002) { //既存行クリック時の戻り処理
+            if (resultCode == Activity.RESULT_OK) {
                 //戻されたcalcSetをメンバ配列として置き換え
-                CalcSet calcSet = (CalcSet)data.getSerializableExtra("calcSet");
-                Log.d(TAG, "calcResult of calcSet:" +calcSet.getCalcResult());
+                CalcSet calcSet = (CalcSet) data.getSerializableExtra("calcSet");
+                Log.d(TAG, "calcResult of calcSet:" + calcSet.getCalcResult());
 
-                //メンバ配列を更新して、メンバ配列で画面更新（DBは見ない）
-                this.calcSetList.set(calcSetEditNo, calcSet);
+                //メンバprojectの配列を更新して、メンバ配列で画面更新（DBは見ない）
+                ArrayList<CalcSet> tmpCalcSetList = this.project.getCalcSetList();
+                tmpCalcSetList.set(calcSetEditNo, calcSet);
+                this.project.setCalcSetList(tmpCalcSetList);
                 calcSetEditNo = -1; //編集が完了したら、番号をリセットする
-                setLisViewFromCalcSetList(this.calcSetList);
-
+                setListView(this.project.getCalcSetList());
             }
         }
     }
 
     /**
      * DBの値をもとに、メンバおよび画面のCalcSetを更新
+     *
      * @param projectId
      */
-    private void updateMemberAndViewOfCalcSetList(int projectId){
-        Log.d(TAG, "projectID is " +projectId);
-        this.calcSetList = dbAdapter.getCalcSets(projectId);
-        Log.d(TAG, "calcSetList size is " +this.calcSetList.size());
-        setLisViewFromCalcSetList(this.calcSetList);
+    private void updateMemberAndViewOfCalcSetList(int projectId) {
+        Log.d(TAG, "projectID is " + projectId);
+        //DBからClacSetListを取得してprojectメンバに設定
+        this.project.setCalcSetList(dbAdapter.getCalcSets(projectId));
+        setListView(this.project.getCalcSetList());
     }
 
-    private void setLisViewFromCalcSetList(ArrayList<CalcSet> calcSetList){
+    private void setListView(ArrayList<CalcSet> calcSetList) {
         //画面に表示するために、Mapを要素に持つListを作成
         List<Map<String, String>> calcListForListView = new ArrayList<Map<String, String>>();
-        for(int i=0; i<calcSetList.size(); i++){
+        for (int i = 0; i < calcSetList.size(); i++) {
             Map<String, String> calcRow = new HashMap<String, String>();
             calcRow.put("Memo", calcSetList.get(i).getMemo());
-            calcRow.put("CalcResult", calcSetList.get(i).calcLeft() +"=" +calcSetList.get(i).getCalcResult());
+            calcRow.put("CalcResult", calcSetList.get(i).calcLeft() + "=" + calcSetList.get(i).getCalcResult());
             calcListForListView.add(calcRow);
         }
 
@@ -169,8 +155,7 @@ public class MainActivity extends AppCompatActivity {
                 new String[]{"Memo", "CalcResult"},
                 new int[]{android.R.id.text1, android.R.id.text2});
 
-        ListView listView = (ListView)findViewById(R.id.calcList);
+        ListView listView = (ListView) findViewById(R.id.calcList);
         listView.setAdapter(adapter);
     }
-
 }

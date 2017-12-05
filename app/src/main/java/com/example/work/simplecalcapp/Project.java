@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class Project  implements Serializable {
     private int projectId = 0;
     private String projectName = null;
-    private ArrayList<CalcSet> calcSetList = null;
+    private ArrayList<CalcSet> calcSetList = new ArrayList<CalcSet>();
 
     public int getProjectId() {
         return projectId;

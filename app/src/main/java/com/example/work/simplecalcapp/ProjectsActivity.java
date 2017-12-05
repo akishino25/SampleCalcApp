@@ -1,7 +1,6 @@
 package com.example.work.simplecalcapp;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,10 +8,8 @@ import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -35,8 +32,6 @@ public class ProjectsActivity extends AppCompatActivity {
         //DBからProjectListを取得し、画面再描画
         dbAdapter.open();
         updateMemberAndViewOfProjectList();
-        //updateProjectListFromProjectTable();
-        //setListViewFromProjectList(this.projectList);
 
         //プロジェクト新規作成ボタンクリックListener
         findViewById(R.id.newProjectButton).setOnClickListener(
@@ -68,7 +63,6 @@ public class ProjectsActivity extends AppCompatActivity {
                 startActivityForResult(intent, requestCode);
             }
         });
-
     }
 
     /**
@@ -85,31 +79,26 @@ public class ProjectsActivity extends AppCompatActivity {
         if (requestCode == 1001) { //プロジェクト作成の戻り処理
             Project project = (Project) data.getSerializableExtra("Project");
             Log.d(TAG, project.getProjectName());
-            /*
-            //Projectをリストに格納して、画面に再描画
-            this.projectList.add(project);
-            setListViewFromProjectList(this.projectList);
-            */
 
             //Project、およびCalcSetをDBに格納して、DB情報を画面に再描画
             dbAdapter.open();
 
             //Projectのidが付与されていなければProject新規登録、付与されていれば更新
-            if(project.getProjectId() == 0){
+            if (project.getProjectId() == 0) {
                 double projectId = dbAdapter.insertProject(project);
-                project.setProjectId((int)projectId);
+                project.setProjectId((int) projectId);
                 Log.d(TAG, "Id of new Project is " + projectId);
-            }else{
+            } else {
                 //TODO:Project更新処理
             }
 
             //ClacSetsのDB処理
-            for(CalcSet calcSet : project.getCalcSetList()){
-                if(calcSet.getCalcSetId() == 0){
+            for (CalcSet calcSet : project.getCalcSetList()) {
+                if (calcSet.getCalcSetId() == 0) {
                     Log.d(TAG, "Paranet's Id of Project is " + project.getProjectId());
                     calcSet.setProjectId(project.getProjectId());
                     dbAdapter.insertCalcSet(calcSet);
-                }else{
+                } else {
                     //TODO:CalcSet更新処理
                 }
             }
@@ -154,8 +143,6 @@ public class ProjectsActivity extends AppCompatActivity {
                 //TODO:削除Projectに関連するCalcSetも削除
                 //削除後に画面再描画
                 updateMemberAndViewOfProjectList();
-                //updateProjectListFromProjectTable();
-                //setListViewFromProjectList(this.projectList);
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -167,34 +154,8 @@ public class ProjectsActivity extends AppCompatActivity {
      */
     private void updateMemberAndViewOfProjectList() {
         this.projectList = dbAdapter.getAllProjects();
-        setListViewFromProjectList(this.projectList);
+        setListView(this.projectList);
     }
-
-
-    /**
-     * メンバのProjectListをProjectTableの内容で更新
-     */
-    /*
-    private void updateProjectListFromProjectTable(){
-        //ArrayList<Project> projectList = new ArrayList<Project>();
-        this.projectList = dbAdapter.getAllProjects();
-
-        //cursorの参照先を先頭にする
-        boolean isEof = cursor.moveToFirst();
-        while (isEof) {
-            int projectId = cursor.getInt(cursor.getColumnIndex(dbAdapter.COL_PROJECT_ID));
-            String projectName = cursor.getString(cursor.getColumnIndex(dbAdapter.COL_PROJECT_NAME));
-            Project project = new Project();
-            project.setProjectId(projectId);
-            project.setProjectName(projectName);
-            projectList.add(project);
-            isEof = cursor.moveToNext();
-        }
-        cursor.close();
-        this.projectList = projectList;
-
-}
-        */
 
 
     /**
@@ -202,7 +163,7 @@ public class ProjectsActivity extends AppCompatActivity {
      *
      * @param projectList
      */
-    private void setListViewFromProjectList(ArrayList<Project> projectList) {
+    private void setListView(ArrayList<Project> projectList) {
         List<String> projectNameList = new ArrayList<String>();
         for (Project p : projectList) {
             String pName = p.getProjectName();

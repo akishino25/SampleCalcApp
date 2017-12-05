@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,7 +29,7 @@ public class DetailActivity extends AppCompatActivity {
         this.calcSet = (CalcSet) getIntent().getSerializableExtra("calcSet");
 
         //CalcSetを展開してViewに表示
-        setViewFromCalcSet(calcSet);
+        setView(calcSet);
 
         //確定ボタンクリックListener
         Button confirmButton = (Button) findViewById(R.id.confirmButton);
@@ -77,7 +76,7 @@ public class DetailActivity extends AppCompatActivity {
      *
      * @param calcSet
      */
-    private void setViewFromCalcSet(CalcSet calcSet) {
+    private void setView(CalcSet calcSet) {
         //メモ表示
         if (calcSet.getMemo() != null) {
             EditText inputMemo = (EditText) findViewById(R.id.inputMemo);
@@ -101,6 +100,5 @@ public class DetailActivity extends AppCompatActivity {
             int position = adapter.getPosition(calcSet.getInputSyms().get(0));
             firstInputSymbol.setSelection(position);
         }
-
     }
 }
