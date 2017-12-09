@@ -77,33 +77,35 @@ public class ProjectsActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 1001) { //プロジェクト作成の戻り処理
-            Project project = (Project) data.getSerializableExtra("Project");
-            Log.d(TAG, project.getProjectName());
+            if (resultCode == RESULT_OK){
+                Project project = (Project) data.getSerializableExtra("Project");
+                Log.d(TAG, project.getProjectName());
 
-            //Project、およびCalcSetをDBに格納して、DB情報を画面に再描画
-            dbAdapter.open();
+                //Project、およびCalcSetをDBに格納して、DB情報を画面に再描画
+                dbAdapter.open();
 
-            //Projectのidが付与されていなければProject新規登録、付与されていれば更新
-            if (project.getProjectId() == 0) {
-                double projectId = dbAdapter.insertProject(project);
-                project.setProjectId((int) projectId);
-                Log.d(TAG, "Id of new Project is " + projectId);
-            } else {
-                double projectId = dbAdapter.updateProject(project);
-                Log.d(TAG, "Id of update Project is " + projectId);
-            }
-
-            //ClacSetsのDB処理
-            for (CalcSet calcSet : project.getCalcSetList()) {
-                if (calcSet.getCalcSetId() == 0) {
-                    Log.d(TAG, "Paranet's Id of Project is " + project.getProjectId());
-                    calcSet.setProjectId(project.getProjectId());
-                    dbAdapter.insertCalcSet(calcSet);
+                //Projectのidが付与されていなければProject新規登録、付与されていれば更新
+                if (project.getProjectId() == 0) {
+                    double projectId = dbAdapter.insertProject(project);
+                    project.setProjectId((int) projectId);
+                    Log.d(TAG, "Id of new Project is " + projectId);
                 } else {
-                    dbAdapter.updateCalcSet(calcSet);
+                    double projectId = dbAdapter.updateProject(project);
+                    Log.d(TAG, "Id of update Project is " + projectId);
                 }
+
+                //ClacSetsのDB処理
+                for (CalcSet calcSet : project.getCalcSetList()) {
+                    if (calcSet.getCalcSetId() == 0) {
+                        Log.d(TAG, "Paranet's Id of Project is " + project.getProjectId());
+                        calcSet.setProjectId(project.getProjectId());
+                        dbAdapter.insertCalcSet(calcSet);
+                    } else {
+                        dbAdapter.updateCalcSet(calcSet);
+                    }
+                }
+                updateMemberAndViewOfProjectList();
             }
-            updateMemberAndViewOfProjectList();
         }
     }
 

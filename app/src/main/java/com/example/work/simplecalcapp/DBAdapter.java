@@ -173,22 +173,19 @@ public class DBAdapter {
         ContentValues values = new ContentValues();
         values.put(COL_CALCSET_PROJECTID, calcSet.getProjectId());
         values.put(COL_CAlCSET_MEMO, calcSet.getMemo());
-        values.put(COL_CAlCSET_INPUTNUMS, calcSet.convertFromInputNumsToString());
-        values.put(COL_CAlCSET_INPUTSYMS, calcSet.convertFromInputSymsToString());
-        values.put(COL_CAlCSET_CALCRESULT, calcSet.getCalcResult());
+        if(calcSet.enableCalcCheck()){
+            values.put(COL_CAlCSET_INPUTNUMS, calcSet.convertFromInputNumsToString());
+            values.put(COL_CAlCSET_INPUTSYMS, calcSet.convertFromInputSymsToString());
+            values.put(COL_CAlCSET_CALCRESULT, calcSet.getCalcResult());
+        }
         return db.insert(CALCSET_TABLE_NAME, null, values) > 0;
     }
 
     /**
-     * CalcSet削除
-     * @param calcSetId
+     * projectIdを親に持つCalcSetを削除
+     * @param projectId
      * @return
      */
-    public int deleteCalcSet(int calcSetId){
-        //TODO:CalcSet削除処理実装
-        return 0;
-    }
-
     public int deleteCalcSetBelongProject(int projectId){
         int rowId = db.delete(CALCSET_TABLE_NAME,
                 COL_CALCSET_PROJECTID + "=?",
@@ -205,9 +202,11 @@ public class DBAdapter {
         int rowId = -1;
         ContentValues values = new ContentValues();
         values.put(COL_CAlCSET_MEMO, calcSet.getMemo());
-        values.put(COL_CAlCSET_INPUTNUMS, calcSet.convertFromInputNumsToString());
-        values.put(COL_CAlCSET_INPUTSYMS, calcSet.convertFromInputSymsToString());
-        values.put(COL_CAlCSET_CALCRESULT, calcSet.getCalcResult());
+        if(calcSet.enableCalcCheck()){
+            values.put(COL_CAlCSET_INPUTNUMS, calcSet.convertFromInputNumsToString());
+            values.put(COL_CAlCSET_INPUTSYMS, calcSet.convertFromInputSymsToString());
+            values.put(COL_CAlCSET_CALCRESULT, calcSet.getCalcResult());
+        }
         rowId = db.update(CALCSET_TABLE_NAME, values,
                 COL_PROJECT_ID + "=?",
                 new String[]{String.valueOf(calcSet.getCalcSetId())});

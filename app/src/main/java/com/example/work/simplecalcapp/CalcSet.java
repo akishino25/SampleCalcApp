@@ -20,8 +20,9 @@ public class CalcSet implements Serializable {
      * 入力された数値、演算子から計算を実行
      */
     public void calcExec(){
-        //TODO:演算子が2つ以上存在する場合の計算は未考慮
-        if(inputNums.size()>1 && inputSyms.size()>0){
+        //if(inputNums!=null && inputNums.size()>1 && inputSyms!=null && inputSyms.size()>0){
+        //TODO:演算子が2つ以上の場合は未考慮
+        if(enableCalcCheck()){
             switch (inputSyms.get(0)){
                 case "＋":
                     setCalcResult(inputNums.get(0) + inputNums.get(1));
@@ -44,7 +45,7 @@ public class CalcSet implements Serializable {
      * @return
      */
     public String calcLeft(){
-        if(inputNums.size()>1 && inputSyms.size()>0) {
+        if(enableCalcCheck()) {
             String calcLeftString = inputNums.get(0).toString();
             for (int i = 0; i < inputSyms.size(); i++) {
                 calcLeftString = calcLeftString + inputSyms.get(i);
@@ -54,6 +55,19 @@ public class CalcSet implements Serializable {
         }else{
             return null;
         }
+    }
+
+    /**
+     * 計算可能な情報がそろっているか判定
+     */
+    public boolean enableCalcCheck(){
+        if(inputNums!=null && inputSyms!=null){
+            if(inputNums.size()==2 && inputSyms.size()==1){
+                //TODO:入力値×2、入力値×1以外は非対応
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -105,12 +119,15 @@ public class CalcSet implements Serializable {
      * @return
      */
     public ArrayList<Integer> convertFromStringToInputNums(String stringList){
-        ArrayList<Integer> convertedList = new ArrayList<Integer>();
-        String[] l = stringList.split(",", 0);
-        for(int i=0; i<l.length; i++){
-            convertedList.add(Integer.valueOf(l[i]));
+        if(stringList != null){
+            ArrayList<Integer> convertedList = new ArrayList<Integer>();
+            String[] l = stringList.split(",", 0);
+            for(int i=0; i<l.length; i++){
+                convertedList.add(Integer.valueOf(l[i]));
+            }
+            return convertedList;
         }
-        return convertedList;
+        return null;
     }
 
     /**
@@ -118,12 +135,15 @@ public class CalcSet implements Serializable {
      * @return
      */
     public ArrayList<String> convertFromStringToInputSyms(String stringList){
-        ArrayList<String> convertedList = new ArrayList<String>();
-        String[] l = stringList.split(",", 0);
-        for(int i=0; i<l.length; i++){
-            convertedList.add(l[i]);
+        if(stringList!=null){
+            ArrayList<String> convertedList = new ArrayList<String>();
+            String[] l = stringList.split(",", 0);
+            for(int i=0; i<l.length; i++){
+                convertedList.add(l[i]);
+            }
+            return convertedList;
         }
-        return convertedList;
+        return null;
     }
 
     public int getCalcSetId() {

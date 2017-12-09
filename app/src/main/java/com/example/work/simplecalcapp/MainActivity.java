@@ -146,7 +146,11 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < calcSetList.size(); i++) {
             Map<String, String> calcRow = new HashMap<String, String>();
             calcRow.put("Memo", calcSetList.get(i).getMemo());
-            calcRow.put("CalcResult", calcSetList.get(i).calcLeft() + "=" + calcSetList.get(i).getCalcResult());
+            if(calcSetList.get(i).enableCalcCheck()){
+                calcRow.put("CalcResult", calcSetList.get(i).calcLeft() + "=" + calcSetList.get(i).getCalcResult());
+            }else{
+                calcRow.put("CalcResult", null);
+            }
             calcListForListView.add(calcRow);
         }
 

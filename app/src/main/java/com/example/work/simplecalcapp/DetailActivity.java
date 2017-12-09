@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -36,27 +37,33 @@ public class DetailActivity extends AppCompatActivity {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //メモ、入力1,2、演算子1の値を取得
-                //TODO:詳細画面で値を入力せずに確定するとアプリが落ちる
+                //memoメンバ更新
                 EditText inputMemoEdit = (EditText) findViewById(R.id.inputMemo);
                 String inputMemo = inputMemoEdit.getText().toString();
+                if(!TextUtils.isEmpty(inputMemo)){
+                    calcSet.setMemo(inputMemo);
+                }
+                //iputNumsメンバ更新
                 EditText firstInput = (EditText) findViewById(R.id.firstInputNum);
-                int inputNum1 = Integer.parseInt(firstInput.getText().toString());
+                String firstInputStr = firstInput.getText().toString();
                 EditText secondInput = (EditText) findViewById(R.id.secondInputNum);
-                int inputNum2 = Integer.parseInt(secondInput.getText().toString());
+                String secondInputStr = secondInput.getText().toString();
+                if(!TextUtils.isEmpty(firstInputStr) && !TextUtils.isEmpty(secondInputStr)){
+                    int inputNum1 = Integer.parseInt(firstInputStr);
+                    int inputNum2 = Integer.parseInt(secondInputStr);
+                    ArrayList<Integer> inputNums = new ArrayList<Integer>();
+                    inputNums.add(inputNum1);
+                    inputNums.add(inputNum2);
+                    calcSet.setInputNums(inputNums);
+                }
+                //inputSymsメンバ更新
                 Spinner firstInputSymbol = (Spinner) findViewById(R.id.symbol_spinner);
                 String inputSym1 = (String) firstInputSymbol.getSelectedItem();
-
-                //メンバのCalcSetに改めて設定
-                calcSet.setMemo(inputMemo);
-                ArrayList<Integer> inputNums = new ArrayList<Integer>();
-                inputNums.add(inputNum1);
-                inputNums.add(inputNum2);
-                calcSet.setInputNums(inputNums);
-                ArrayList<String> inputSyms = new ArrayList<String>();
-                inputSyms.add(inputSym1);
-                calcSet.setInputSyms(inputSyms);
-
+                if(!TextUtils.isEmpty(inputSym1)){
+                    ArrayList<String> inputSyms = new ArrayList<String>();
+                    inputSyms.add(inputSym1);
+                    calcSet.setInputSyms(inputSyms);
+                }
                 //計算処理して計算結果を設定
                 calcSet.calcExec();
 
