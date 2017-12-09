@@ -189,6 +189,13 @@ public class DBAdapter {
         return 0;
     }
 
+    public int deleteCalcSetBelongProject(int projectId){
+        int rowId = db.delete(CALCSET_TABLE_NAME,
+                COL_CALCSET_PROJECTID + "=?",
+                new String[]{String.valueOf(projectId)});
+        return rowId;
+    }
+
     /**
      * CalcSet更新
      * @param calcSet

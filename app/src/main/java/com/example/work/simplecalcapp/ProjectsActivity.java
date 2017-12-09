@@ -90,7 +90,7 @@ public class ProjectsActivity extends AppCompatActivity {
                 Log.d(TAG, "Id of new Project is " + projectId);
             } else {
                 double projectId = dbAdapter.updateProject(project);
-                Log.d(TAG, "Id of update Project is "+projectId);
+                Log.d(TAG, "Id of update Project is " + projectId);
             }
 
             //ClacSetsのDB処理
@@ -104,14 +104,12 @@ public class ProjectsActivity extends AppCompatActivity {
                 }
             }
             updateMemberAndViewOfProjectList();
-
-            //TODO:リストビュー押下時の処理を追加
         }
     }
 
     /**
      * ContextMenu表示を登録されたViewが長押しクリックを検知した場合
-     *
+     * 長押し用メニューを表示
      * @param menu
      * @param v
      * @param menuInfo
@@ -141,7 +139,7 @@ public class ProjectsActivity extends AppCompatActivity {
                 Project project = projectList.get(info.position);
                 int projectId = project.getProjectId();
                 dbAdapter.deleteProject(projectId);
-                //TODO:削除Projectに関連するCalcSetも削除
+                dbAdapter.deleteCalcSetBelongProject(projectId);
                 //削除後に画面再描画
                 updateMemberAndViewOfProjectList();
                 return true;
