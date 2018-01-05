@@ -20,23 +20,25 @@ public class CalcSet implements Serializable {
      * 入力された数値、演算子から計算を実行
      */
     public void calcExec(){
-        //if(inputNums!=null && inputNums.size()>1 && inputSyms!=null && inputSyms.size()>0){
-        //TODO:演算子が2つ以上の場合は未考慮
         if(enableCalcCheck()){
-            switch (inputSyms.get(0)){
-                case "＋":
-                    setCalcResult(inputNums.get(0) + inputNums.get(1));
-                    break;
-                case "－":
-                    setCalcResult(inputNums.get(0) - inputNums.get(1));
-                    break;
-                case "×":
-                    setCalcResult(inputNums.get(0) * inputNums.get(1));
-                    break;
-                case "÷":
-                    setCalcResult((double)inputNums.get(0) / (double)inputNums.get(1));
-                    break;
+            double res = inputNums.get(0);
+            for(int i =0 ; i<inputSyms.size(); i++){
+                switch (inputSyms.get(i)){
+                    case "＋":
+                        res = res + inputNums.get(i+1);
+                        break;
+                    case "－":
+                        res = res - inputNums.get(i+1);
+                        break;
+                    case "×":
+                        res = res * inputNums.get(i+1);
+                        break;
+                    case "÷":
+                        res = res / (double)inputNums.get(i+1);
+                        break;
+                }
             }
+            setCalcResult((double)res);
         }
     }
 
@@ -61,9 +63,9 @@ public class CalcSet implements Serializable {
      * 計算可能な情報がそろっているか判定
      */
     public boolean enableCalcCheck(){
-        if(inputNums!=null && inputSyms!=null){
-            if(inputNums.size()==2 && inputSyms.size()==1){
-                //TODO:入力値×2、入力値×1以外は非対応
+        if(inputNums!=null || inputSyms!=null){
+            if(inputNums.size() - inputSyms.size() ==  1){
+                //inputSymsはinputNumsより1少ない
                 return true;
             }
         }

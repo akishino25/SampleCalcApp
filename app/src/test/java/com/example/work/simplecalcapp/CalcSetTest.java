@@ -17,7 +17,7 @@ public class CalcSetTest {
      * 入力値を2つ、入力演算子を1つ設定して、計算可能チェックがtrueになることを確認
      */
     @Test
-    public void testEnableCalcCheck() {
+    public void testEnableCalcCheck_ok_1pair() {
         CalcSet calcSet = new CalcSet();
         ArrayList<Integer> inputNums = new ArrayList<Integer>();
         inputNums.add(1);
@@ -25,6 +25,26 @@ public class CalcSetTest {
         calcSet.setInputNums(inputNums);
         ArrayList<String> inputSyms = new ArrayList<String>();
         inputSyms.add("＋");
+        calcSet.setInputSyms(inputSyms);
+
+        assertTrue(calcSet.enableCalcCheck());
+    }
+
+    /**
+     * enableClacCheckのテスト
+     * 入力値を3つ、入力演算子を2つ設定して、計算可能チェックがtrueになることを確認
+     */
+    @Test
+    public void testEnableCalcCheck_ok_2pair() {
+        CalcSet calcSet = new CalcSet();
+        ArrayList<Integer> inputNums = new ArrayList<Integer>();
+        inputNums.add(1);
+        inputNums.add(2);
+        inputNums.add(3);
+        calcSet.setInputNums(inputNums);
+        ArrayList<String> inputSyms = new ArrayList<String>();
+        inputSyms.add("＋");
+        inputSyms.add("－");
         calcSet.setInputSyms(inputSyms);
 
         assertTrue(calcSet.enableCalcCheck());
@@ -102,6 +122,38 @@ public class CalcSetTest {
         expect.add("－");
         ArrayList<String> actual = calcSet.convertFromStringToInputSyms("＋,－");
         assertEquals(expect, actual);
+    }
+
+    @Test
+    public void testCalcExec_ok_1pair(){
+        CalcSet calcSet = new CalcSet();
+        ArrayList<Integer> inputNum = new ArrayList<>();
+        inputNum.add(10);
+        inputNum.add(20);
+        calcSet.setInputNums(inputNum);
+        ArrayList<String> inputSym = new ArrayList<>();
+        inputSym.add("＋");
+        calcSet.setInputSyms(inputSym);
+        calcSet.calcExec();
+        double expect = 30.0;
+        assertEquals(expect, calcSet.getCalcResult(), 0.0);
+    }
+
+    @Test
+    public void testCalcExec_ok_2pair(){
+        CalcSet calcSet = new CalcSet();
+        ArrayList<Integer> inputNum = new ArrayList<>();
+        inputNum.add(30);
+        inputNum.add(20);
+        inputNum.add(10);
+        calcSet.setInputNums(inputNum);
+        ArrayList<String> inputSym = new ArrayList<>();
+        inputSym.add("＋");
+        inputSym.add("－");
+        calcSet.setInputSyms(inputSym);
+        calcSet.calcExec();
+        double expect = 40.0;
+        assertEquals(expect, calcSet.getCalcResult(), 0.0);
     }
 
 }
