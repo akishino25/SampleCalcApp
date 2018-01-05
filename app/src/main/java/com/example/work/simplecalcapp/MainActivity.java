@@ -32,6 +32,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //アイコン表示
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
+
         //ProjectsActivityからProjectを渡された時の処理
         this.project = (Project) getIntent().getSerializableExtra("Project");
         //ProjectIDを持つCalcSetで画面再描画

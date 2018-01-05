@@ -39,6 +39,11 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
+        //アイコン表示
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
+
         //渡されたCalcSetをメンバに設定
         this.calcSet = (CalcSet) getIntent().getSerializableExtra("calcSet");
 
