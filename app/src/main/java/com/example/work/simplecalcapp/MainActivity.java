@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
+    //TODO:作成したCalcSetの削除長押し
 
     //Logcat用タグ文字列（クラス名）
     private final static String TAG = MainActivity.class.getSimpleName();

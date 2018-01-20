@@ -19,9 +19,9 @@ public class CalcSetTest {
     @Test
     public void testEnableCalcCheck_ok_1pair() {
         CalcSet calcSet = new CalcSet();
-        ArrayList<Integer> inputNums = new ArrayList<Integer>();
-        inputNums.add(1);
-        inputNums.add(2);
+        ArrayList<Double> inputNums = new ArrayList<Double>();
+        inputNums.add(1.0);
+        inputNums.add(2.0);
         calcSet.setInputNums(inputNums);
         ArrayList<String> inputSyms = new ArrayList<String>();
         inputSyms.add("＋");
@@ -37,10 +37,10 @@ public class CalcSetTest {
     @Test
     public void testEnableCalcCheck_ok_2pair() {
         CalcSet calcSet = new CalcSet();
-        ArrayList<Integer> inputNums = new ArrayList<Integer>();
-        inputNums.add(1);
-        inputNums.add(2);
-        inputNums.add(3);
+        ArrayList<Double> inputNums = new ArrayList<Double>();
+        inputNums.add(1.0);
+        inputNums.add(2.0);
+        inputNums.add(3.0);
         calcSet.setInputNums(inputNums);
         ArrayList<String> inputSyms = new ArrayList<String>();
         inputSyms.add("＋");
@@ -57,8 +57,8 @@ public class CalcSetTest {
     @Test
     public void testEnableCalcCheck_ng_inputNums() {
         CalcSet calcSet = new CalcSet();
-        ArrayList<Integer> inputNums = new ArrayList<Integer>();
-        inputNums.add(1);
+        ArrayList<Double> inputNums = new ArrayList<Double>();
+        inputNums.add(1.0);
         calcSet.setInputNums(inputNums);
         ArrayList<String> inputSyms = new ArrayList<String>();
         inputSyms.add("＋");
@@ -74,9 +74,9 @@ public class CalcSetTest {
     @Test
     public void testEnableCalcCheck_ng_inputSyms() {
         CalcSet calcSet = new CalcSet();
-        ArrayList<Integer> inputNums = new ArrayList<Integer>();
-        inputNums.add(1);
-        inputNums.add(2);
+        ArrayList<Double> inputNums = new ArrayList<Double>();
+        inputNums.add(1.0);
+        inputNums.add(2.0);
         calcSet.setInputNums(inputNums);
         ArrayList<String> inputSyms = new ArrayList<String>();
         calcSet.setInputSyms(inputSyms);
@@ -87,11 +87,11 @@ public class CalcSetTest {
     @Test
     public void testConvertFormInputNumsToString() {
         CalcSet calcSet = new CalcSet();
-        ArrayList<Integer> inputNums = new ArrayList<Integer>();
-        inputNums.add(1);
-        inputNums.add(2);
+        ArrayList<Double> inputNums = new ArrayList<Double>();
+        inputNums.add(1.0);
+        inputNums.add(2.0);
         calcSet.setInputNums(inputNums);
-        assertEquals(calcSet.convertFromInputNumsToString(), "1,2");
+        assertEquals(calcSet.convertFromInputNumsToString(), "1.0,2.0");
     }
 
     @Test
@@ -107,10 +107,10 @@ public class CalcSetTest {
     @Test
     public void testConvertFromStringToInputNums(){
         CalcSet calcSet = new CalcSet();
-        ArrayList<Integer> expect = new ArrayList<Integer>();
-        expect.add(1);
-        expect.add(2);
-        ArrayList<Integer> actual = calcSet.convertFromStringToInputNums("1,2");
+        ArrayList<Double> expect = new ArrayList<>();
+        expect.add(1.0);
+        expect.add(2.0);
+        ArrayList<Double> actual = calcSet.convertFromStringToInputNums("1.0,2.0");
         assertEquals(expect, actual);
     }
 
@@ -127,9 +127,9 @@ public class CalcSetTest {
     @Test
     public void testCalcExec_ok_1pair(){
         CalcSet calcSet = new CalcSet();
-        ArrayList<Integer> inputNum = new ArrayList<>();
-        inputNum.add(10);
-        inputNum.add(20);
+        ArrayList<Double> inputNum = new ArrayList<>();
+        inputNum.add(10.0);
+        inputNum.add(20.0);
         calcSet.setInputNums(inputNum);
         ArrayList<String> inputSym = new ArrayList<>();
         inputSym.add("＋");
@@ -142,10 +142,10 @@ public class CalcSetTest {
     @Test
     public void testCalcExec_ok_2pair(){
         CalcSet calcSet = new CalcSet();
-        ArrayList<Integer> inputNum = new ArrayList<>();
-        inputNum.add(30);
-        inputNum.add(20);
-        inputNum.add(10);
+        ArrayList<Double> inputNum = new ArrayList<>();
+        inputNum.add(30.0);
+        inputNum.add(20.0);
+        inputNum.add(10.0);
         calcSet.setInputNums(inputNum);
         ArrayList<String> inputSym = new ArrayList<>();
         inputSym.add("＋");
@@ -156,4 +156,27 @@ public class CalcSetTest {
         assertEquals(expect, calcSet.getCalcResult(), 0.0);
     }
 
-}
+    @Test
+    public void testCalcExec2_ok(){
+        CalcSet calcSet = new CalcSet();
+        ArrayList<Double> inputNum = new ArrayList<>();
+        inputNum.add(1.0);
+        inputNum.add(2.0);
+        inputNum.add(3.0);
+        inputNum.add(4.0);
+        inputNum.add(5.0);
+        calcSet.setInputNums(inputNum);
+        ArrayList<String> inputSym = new ArrayList<>();
+        inputSym.add("＋");
+        inputSym.add("－");
+        inputSym.add("×");
+        inputSym.add("÷");
+        calcSet.setInputSyms(inputSym);
+        calcSet.calcExec();
+        double expect = 0.6;
+        assertEquals(expect, calcSet.getCalcResult(), 0.0);
+
+    }
+
+
+    }

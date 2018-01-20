@@ -234,7 +234,7 @@ public class DBAdapter {
         boolean isEof = cursor.moveToFirst();
         while (isEof) {
             CalcSet calcSet = new CalcSet();
-            ArrayList<Integer> inputNums = calcSet.convertFromStringToInputNums(
+            ArrayList<Double> inputNums = calcSet.convertFromStringToInputNums(
                     cursor.getString(cursor.getColumnIndex(COL_CAlCSET_INPUTNUMS)));
             ArrayList<String> inputSyms = calcSet.convertFromStringToInputSyms(
                     cursor.getString(cursor.getColumnIndex(COL_CAlCSET_INPUTSYMS)));

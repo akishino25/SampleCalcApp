@@ -2,6 +2,7 @@ package com.example.work.simplecalcapp;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -21,7 +22,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class DetailActivity extends AppCompatActivity {
-    //TODO:計算式は左から順に実施していることが分かるように工夫する
+    //TODO:計算式は左から順に実施していることが分かるように工夫する→あるいは計算できるように関数実装
+    //TODO:追加した計算セットの削除ボタン
+    //一度入力すると小数表示されるが、小数点を入力できない
 
     //Logcat用タグ文字列（クラス名）
     private final static String TAG = DetailActivity.class.getSimpleName();
@@ -66,14 +69,18 @@ public class DetailActivity extends AppCompatActivity {
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*test*/
-                for(EditText inputNumEdit :inputNumEditList){
-                    Log.d(TAG, inputNumEdit.getText().toString());
-                }
-                for(Spinner inputSpinner :inputSymSpinnerList){
-                    Log.d(TAG, inputSpinner.getSelectedItem().toString());
+
+                if(validate() == false){
+                    //入力に不正がある
+                    new AlertDialog.Builder(DetailActivity.this)
+                            .setTitle(R.string.detailValidateTitle)
+                            .setMessage(R.string.detailValidateMessage)
+                            .setPositiveButton("OK", null)
+                            .show();
+                    return;
                 }
 
+                Log.d(TAG, Boolean.toString(validate()));
 
                 //memoメンバ更新
                 EditText inputMemoEdit = (EditText) findViewById(R.id.inputMemo);
@@ -82,10 +89,9 @@ public class DetailActivity extends AppCompatActivity {
                     calcSet.setMemo(inputMemo);
                 }
                 //iputNumsメンバ更新
-                //TODO:入力値が全て入力されていなかった時の例外処理
-                ArrayList<Integer> l = new ArrayList<Integer>();
+                ArrayList<Double> l = new ArrayList<Double>();
                 for(EditText inputNumberEdit :inputNumEditList){
-                    l.add(Integer.parseInt(inputNumberEdit.getText().toString()));
+                    l.add(Double.parseDouble(inputNumberEdit.getText().toString()));
                 }
                 calcSet.setInputNums(l);
 
@@ -209,4 +215,19 @@ public class DetailActivity extends AppCompatActivity {
                 inputSymsSpinner.setSelection(position);            }
         }
     }
+
+    /**
+     * 確定ボタン押下時に、入力に問題無いかチェックする
+     * @return
+     */
+    private boolean validate(){
+        //数値入力欄が全て入力されていること
+        for(EditText inputNumberEdit :inputNumEditList){
+            if(TextUtils.isEmpty(inputNumberEdit.getText().toString())){
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

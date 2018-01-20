@@ -17,6 +17,9 @@
     <string name="addPartButton">追加</string>
     <string name="confirmButton">確定</string>
 
+    <string name="detailValidateTitle">入力欄に誤りがあります</string>
+    <string name="detailValidateMessage">未入力の項目があります</string>
+
     <string-array name="symbol_items">
         <item>＋</item>
         <item>－</item>
