@@ -105,7 +105,7 @@ public class CalcSetTest {
     }
 
     @Test
-    public void testConvertFromStringToInputNums(){
+    public void testConvertFromStringToInputNums() {
         CalcSet calcSet = new CalcSet();
         ArrayList<Double> expect = new ArrayList<>();
         expect.add(1.0);
@@ -115,7 +115,7 @@ public class CalcSetTest {
     }
 
     @Test
-    public void testConvertFromStringToInputSyms(){
+    public void testConvertFromStringToInputSyms() {
         CalcSet calcSet = new CalcSet();
         ArrayList<String> expect = new ArrayList<>();
         expect.add("＋");
@@ -125,7 +125,7 @@ public class CalcSetTest {
     }
 
     @Test
-    public void testCalcExec_ok_1pair(){
+    public void testCalcExec_ok_1pair() {
         CalcSet calcSet = new CalcSet();
         ArrayList<Double> inputNum = new ArrayList<>();
         inputNum.add(10.0);
@@ -140,7 +140,7 @@ public class CalcSetTest {
     }
 
     @Test
-    public void testCalcExec_ok_2pair(){
+    public void testCalcExec_ok_2pair() {
         CalcSet calcSet = new CalcSet();
         ArrayList<Double> inputNum = new ArrayList<>();
         inputNum.add(30.0);
@@ -157,7 +157,7 @@ public class CalcSetTest {
     }
 
     @Test
-    public void testCalcExec2_ok(){
+    public void testCalcExec2_ok() {
         CalcSet calcSet = new CalcSet();
         ArrayList<Double> inputNum = new ArrayList<>();
         inputNum.add(1.0);
@@ -175,8 +175,57 @@ public class CalcSetTest {
         calcSet.calcExec();
         double expect = 0.6;
         assertEquals(expect, calcSet.getCalcResult(), 0.0);
-
     }
 
-
+    /**
+     * calcLeftのテスト
+     * CalcSetのメンバから計算式を出力できることを確認
+     */
+    @Test
+    public void testCalcLeft_ok() {
+        CalcSet calcSet = new CalcSet();
+        ArrayList<Double> inputNum = new ArrayList<>();
+        inputNum.add(1.0);
+        inputNum.add(2.0);
+        inputNum.add(3.0);
+        inputNum.add(4.0);
+        inputNum.add(5.0);
+        calcSet.setInputNums(inputNum);
+        ArrayList<String> inputSym = new ArrayList<>();
+        inputSym.add("＋");
+        inputSym.add("－");
+        inputSym.add("×");
+        inputSym.add("÷");
+        calcSet.setInputSyms(inputSym);
+        String expect = "1.0＋2.0－((3.0×4.0)÷5.0)";
+        assertEquals(expect, calcSet.calcLeft());
     }
+
+    /**
+     * calcLeftのテスト2
+     * CalcSetのメンバから計算式を出力できることを確認
+     * ((1*2)/3)+((4*5)/6))
+     */
+    @Test
+    public void testCalcLeft_ok2() {
+        CalcSet calcSet = new CalcSet();
+        ArrayList<Double> inputNum = new ArrayList<>();
+        inputNum.add(1.0);
+        inputNum.add(2.0);
+        inputNum.add(3.0);
+        inputNum.add(4.0);
+        inputNum.add(5.0);
+        inputNum.add(6.0);
+        calcSet.setInputNums(inputNum);
+        ArrayList<String> inputSym = new ArrayList<>();
+        inputSym.add("×");
+        inputSym.add("÷");
+        inputSym.add("＋");
+        inputSym.add("×");
+        inputSym.add("÷");
+        calcSet.setInputSyms(inputSym);
+        String expect = "((1.0×2.0)÷3.0)＋((4.0×5.0)÷6.0)";
+        assertEquals(expect, calcSet.calcLeft());
+    }
+
+}

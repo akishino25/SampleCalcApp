@@ -151,12 +151,18 @@ public class MainActivity extends AppCompatActivity {
         List<Map<String, String>> calcListForListView = new ArrayList<Map<String, String>>();
         for (int i = 0; i < calcSetList.size(); i++) {
             Map<String, String> calcRow = new HashMap<String, String>();
+            Log.d(TAG, "Memo:" + calcSetList.get(i).getMemo());
+            Log.d(TAG, "CalcLeft:" + calcSetList.get(i).calcLeft());
+            Log.d(TAG, "CalcResult:" + calcSetList.get(i).getCalcResult());
             calcRow.put("Memo", calcSetList.get(i).getMemo());
+            calcRow.put("CalcResult", calcSetList.get(i).calcLeft() + "=" + calcSetList.get(i).getCalcResult());
+            /*
             if(calcSetList.get(i).enableCalcCheck()){
                 calcRow.put("CalcResult", calcSetList.get(i).calcLeft() + "=" + calcSetList.get(i).getCalcResult());
             }else{
                 calcRow.put("CalcResult", null);
-            }
+            }*/
+
             calcListForListView.add(calcRow);
         }
 

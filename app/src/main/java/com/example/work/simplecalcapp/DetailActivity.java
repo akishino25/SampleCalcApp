@@ -105,6 +105,10 @@ public class DetailActivity extends AppCompatActivity {
                 //計算処理して計算結果を設定
                 calcSet.calcExec();
 
+                for(String sym : calcSet.getInputSyms()){
+                    Log.d(TAG, "sym:" +sym);
+                }
+
                 //IntentでcalcSetをMainActivityに戻す
                 Intent intent = new Intent();
                 Log.d(TAG, "calcResult of calcSet:" +calcSet.getCalcResult());
