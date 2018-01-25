@@ -22,7 +22,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class DetailActivity extends AppCompatActivity {
-    //TODO:計算式は左から順に実施していることが分かるように工夫する→あるいは計算できるように関数実装
     //TODO:追加した計算セットの削除ボタン
     //一度入力すると小数表示されるが、小数点を入力できない
 

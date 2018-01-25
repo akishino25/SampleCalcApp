@@ -33,41 +33,12 @@ public class CalcSet implements Serializable {
     private double calcResult = 0;
 
     /**
-     * 入力された数値、演算子から計算を実行
-     */
-    /*
-    public void calcExec(){
-        if(enableCalcCheck()){
-            double res = inputNums.get(0);
-            for(int i =0 ; i<inputSyms.size(); i++){
-                switch (inputSyms.get(i)){
-                    case "＋":
-                        res = res + inputNums.get(i+1);
-                        break;
-                    case "－":
-                        res = res - inputNums.get(i+1);
-                        break;
-                    case "×":
-                        res = res * inputNums.get(i+1);
-                        break;
-                    case "÷":
-                        res = res / (double)inputNums.get(i+1);
-                        break;
-                }
-            }
-            setCalcResult((double)res);
-        }
-    }
-    */
-
-    /**
      * 四則演算順序考慮版
-     *
      */
-    public void calcExec(){
+    public void calcExec() {
         //Doubleの配列をBigDecimalの配列に変換
         ArrayList<BigDecimal> tmpInputNums = new ArrayList<BigDecimal>();
-        for(int i=0; i<this.inputNums.size(); i++){
+        for (int i = 0; i < this.inputNums.size(); i++) {
             System.out.println(i);
             tmpInputNums.add(BigDecimal.valueOf(this.inputNums.get(i)));
         }
@@ -76,18 +47,18 @@ public class CalcSet implements Serializable {
         ArrayList<String> tmpInputSyms = new ArrayList<String>(this.inputSyms);
 
         //演算子リストに積または商がなくなるまでループ
-        while(tmpInputSyms.indexOf("×") != -1 || tmpInputSyms.indexOf("÷") != -1){
+        while (tmpInputSyms.indexOf("×") != -1 || tmpInputSyms.indexOf("÷") != -1) {
             //演算子リストの先頭から、積または商を検索して、項番取得
             int multiSymNo = tmpInputSyms.indexOf("×");
             int divSymNo = tmpInputSyms.indexOf("÷");
             int symNo = 0;
-            if(multiSymNo == -1){
+            if (multiSymNo == -1) {
                 symNo = divSymNo;
-            }else if(divSymNo == -1){
+            } else if (divSymNo == -1) {
                 symNo = multiSymNo;
-            }else if(multiSymNo < divSymNo){
+            } else if (multiSymNo < divSymNo) {
                 symNo = multiSymNo;
-            }else if(multiSymNo > divSymNo){
+            } else if (multiSymNo > divSymNo) {
                 symNo = divSymNo;
             }
 
@@ -96,12 +67,12 @@ public class CalcSet implements Serializable {
 
             //部分計算
             BigDecimal partRes = null;
-            switch (tmpInputSyms.get(symNo)){
+            switch (tmpInputSyms.get(symNo)) {
                 case "×":
-                    partRes = tmpInputNums.get(numNo).multiply(tmpInputNums.get(numNo+1));
+                    partRes = tmpInputNums.get(numNo).multiply(tmpInputNums.get(numNo + 1));
                     break;
                 case "÷":
-                    partRes = tmpInputNums.get(numNo).divide(tmpInputNums.get(numNo+1),5, RoundingMode.HALF_UP);
+                    partRes = tmpInputNums.get(numNo).divide(tmpInputNums.get(numNo + 1), 5, RoundingMode.HALF_UP);
                     break;
             }
 
@@ -109,18 +80,18 @@ public class CalcSet implements Serializable {
             tmpInputSyms.remove(symNo);
             //同項番の数値は計算結果に置き換え、同項番+1の数値は削除
             tmpInputNums.set(numNo, partRes);
-            tmpInputNums.remove(numNo+1);
+            tmpInputNums.remove(numNo + 1);
         }
 
         //ループから抜けたらあとは左から順番に加算もしくは減算する
         BigDecimal res = tmpInputNums.get(0);
-        for(int i =0 ; i<tmpInputSyms.size(); i++) {
+        for (int i = 0; i < tmpInputSyms.size(); i++) {
             switch (tmpInputSyms.get(i)) {
                 case "＋":
-                    res = res.add(tmpInputNums.get(i+1));
+                    res = res.add(tmpInputNums.get(i + 1));
                     break;
                 case "－":
-                    res = res.subtract(tmpInputNums.get(i+1));
+                    res = res.subtract(tmpInputNums.get(i + 1));
                     break;
             }
         }
@@ -130,14 +101,13 @@ public class CalcSet implements Serializable {
 
     /**
      * 計算式の左側を文字列として返却
+     *
      * @return
      */
-    public String calcLeft(){
-        // 1 + 2 - ((3 * 4) / 5)
-
+    public String calcLeft() {
         //本処理用にDoubleを文字列に変換
         ArrayList<String> tmpInputNums = new ArrayList<String>();
-        for(int i=0; i<inputNums.size(); i++){
+        for (int i = 0; i < inputNums.size(); i++) {
             tmpInputNums.add(inputNums.get(i).toString());
         }
         //本処理用にディープコピー
@@ -148,7 +118,7 @@ public class CalcSet implements Serializable {
 
         //演算子リストに積または商がなくなるまでループ
         int count = 0;
-        while(tmpInputSyms.indexOf("×") != -1 || tmpInputSyms.indexOf("÷") != -1) {
+        while (tmpInputSyms.indexOf("×") != -1 || tmpInputSyms.indexOf("÷") != -1) {
             //演算子リストの先頭から、積または商を検索して、項番取得
             int multiSymNo = tmpInputSyms.indexOf("×");
             int divSymNo = tmpInputSyms.indexOf("÷");
@@ -168,70 +138,42 @@ public class CalcSet implements Serializable {
 
             //keyword:部分計算式のマップをスタックに詰める
             HashMap<String, String> map = new HashMap<String, String>();
-            map.put("key", "part"+count);
-            map.put("calc", tmpInputNums.get(numNo) + tmpInputSyms.get(symNo) + tmpInputNums.get(numNo+1));
+            map.put("key", "part" + count);
+            map.put("calc", tmpInputNums.get(numNo) + tmpInputSyms.get(symNo) + tmpInputNums.get(numNo + 1));
             stack.push(map);
 
             //部分計算式をpart+iのキーワードで置き換える
-            tmpInputNums.set(numNo, "part"+count);
-            tmpInputNums.remove(numNo+1);
+            tmpInputNums.set(numNo, "part" + count);
+            tmpInputNums.remove(numNo + 1);
             tmpInputSyms.remove(symNo);
 
             count++;
-
-            //テスト
-            String r = "inputNums:";
-            for(String inputNum : tmpInputNums){
-                r = r + "," +inputNum;
-            }
-            System.out.println(r);
-
-            r = "inputSyms:";
-            for(String inputSym : tmpInputSyms){
-                r = r + "," +inputSym;
-            }
-            System.out.println(r);
-
         }
 
         //置換後の計算式文字列を生成
         String calcLeft = tmpInputNums.get(0);
-        for(int i=0; i<tmpInputSyms.size(); i++){
+        for (int i = 0; i < tmpInputSyms.size(); i++) {
             calcLeft = calcLeft + tmpInputSyms.get(i);
-            calcLeft = calcLeft + tmpInputNums.get(i+1);
+            calcLeft = calcLeft + tmpInputNums.get(i + 1);
         }
-        System.out.println("calcLeft first:" + calcLeft);
 
         //ループから抜けたらスタックの先頭からキーワードを戻す、戻すときにカッコを前後につける
-        while(true){
+        while (true) {
             HashMap<String, String> map = stack.poll();
-            if(map == null){
+            if (map == null) {
                 break;
             }
-            System.out.println("key:" +map.get("key"));
-            System.out.println("calc:" +map.get("calc"));
-
-            calcLeft = calcLeft.replace(map.get("key"), "(" +map.get("calc") +")");
-            System.out.println(calcLeft);
+            calcLeft = calcLeft.replace(map.get("key"), "(" + map.get("calc") + ")");
         }
         return calcLeft;
-
-        /*
-        String calcLeftString = inputNums.get(0).toString();
-        for (int i = 0; i < inputSyms.size(); i++) {
-            calcLeftString = calcLeftString + inputSyms.get(i);
-            calcLeftString = calcLeftString + inputNums.get(i + 1).toString();
-        }
-        return calcLeftString;
-        */
     }
 
     /**
      * 計算可能な情報がそろっているか判定
      */
-    public boolean enableCalcCheck(){
-        if(inputNums!=null || inputSyms!=null){
-            if(inputNums.size() - inputSyms.size() ==  1){
+    public boolean enableCalcCheck() {
+        if (inputNums != null || inputSyms != null) {
+            if (inputNums.size() - inputSyms.size() == 1) {
                 //inputSymsはinputNumsより1少ない
                 return true;
             }
@@ -241,20 +183,21 @@ public class CalcSet implements Serializable {
 
     /**
      * inputNums のArrayListをStringに変換
+     *
      * @return
      */
-    public String convertFromInputNumsToString(){
+    public String convertFromInputNumsToString() {
         String c = null;
-        for(int i=0; i<this.inputNums.size(); i++ ){
+        for (int i = 0; i < this.inputNums.size(); i++) {
             String d = null;
-            if(i != this.inputNums.size()-1){
+            if (i != this.inputNums.size() - 1) {
                 d = String.valueOf(inputNums.get(i)) + ",";
-            }else{
+            } else {
                 d = String.valueOf(inputNums.get(i));
             }
-            if(c == null){
+            if (c == null) {
                 c = d;
-            }else{
+            } else {
                 c = c + d;
             }
         }
@@ -263,20 +206,21 @@ public class CalcSet implements Serializable {
 
     /**
      * inputSyms のArrayListをStringに変換
+     *
      * @return
      */
-    public String convertFromInputSymsToString(){
+    public String convertFromInputSymsToString() {
         String c = null;
-        for(int i=0; i<this.inputSyms.size(); i++ ){
+        for (int i = 0; i < this.inputSyms.size(); i++) {
             String d = null;
-            if(i != this.inputSyms.size()-1){
+            if (i != this.inputSyms.size() - 1) {
                 d = inputSyms.get(i) + ",";
-            }else{
+            } else {
                 d = inputSyms.get(i);
             }
-            if(c == null){
+            if (c == null) {
                 c = d;
-            }else{
+            } else {
                 c = c + d;
             }
         }
@@ -285,13 +229,14 @@ public class CalcSet implements Serializable {
 
     /**
      * inputNums のStringをArrayListに変換
+     *
      * @return
      */
-    public ArrayList<Double> convertFromStringToInputNums(String stringList){
-        if(stringList != null){
+    public ArrayList<Double> convertFromStringToInputNums(String stringList) {
+        if (stringList != null) {
             ArrayList<Double> convertedList = new ArrayList<>();
             String[] l = stringList.split(",", 0);
-            for(int i=0; i<l.length; i++){
+            for (int i = 0; i < l.length; i++) {
                 convertedList.add(Double.valueOf(l[i]));
             }
             return convertedList;
@@ -301,13 +246,14 @@ public class CalcSet implements Serializable {
 
     /**
      * inputSyms のStringをArrayListに変換
+     *
      * @return
      */
-    public ArrayList<String> convertFromStringToInputSyms(String stringList){
-        if(stringList!=null){
+    public ArrayList<String> convertFromStringToInputSyms(String stringList) {
+        if (stringList != null) {
             ArrayList<String> convertedList = new ArrayList<String>();
             String[] l = stringList.split(",", 0);
-            for(int i=0; i<l.length; i++){
+            for (int i = 0; i < l.length; i++) {
                 convertedList.add(l[i]);
             }
             return convertedList;
